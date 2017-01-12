@@ -16,34 +16,24 @@ public class Algorithm {
 
     // Evolve a population
     public static Population evolvePopulation(Population pop) {
-        Population newPopulation = new Population(pop.size(), false);
+        Population newPopulation = new Population(Solver.populationSize, false);
 
         // Keep our best individual
-        if (elitism) {
-            newPopulation.saveIndividual(0, pop.getFittest());
-        }
-
-        // Crossover population
-        int elitismOffset;
-        if (elitism) {
-            elitismOffset = 1;
-        } else {
-            elitismOffset = 0;
+        for(int i = 0; i<elitism; i++) {
+            newPopulation.saveIndividual(i, pop.getFittest(elitism).get(i).clone());
         }
         // Loop over the population size and create new individuals with
         // crossover
-        for (int i = elitismOffset; i < pop.size(); i++) {
+        for (int i = elitism; i < pop.size(); i++) {
             Individual indiv1 = tournamentSelection(pop);
             Individual indiv2 = tournamentSelection(pop);
             Individual newIndiv = crossover(indiv1, indiv2);
             newPopulation.saveIndividual(i, newIndiv);
         }
-
         // Mutate population
-        for (int i = elitismOffset; i < newPopulation.size(); i++) {
-            mutate(newPopulation.getIndividual(i));
+        for (int i = elitism; i < newPopulation.size(); i++) {
+            newPopulation.getIndividual(i).mutate();
         }
-
         return newPopulation;
     }
 
@@ -53,30 +43,17 @@ public class Algorithm {
         if(indiv1.getSudoku() == indiv2.getSudoku()) {
             return indiv1;
         }
-        Individual newSol = indiv1.clone();
-        // Loop through genes
-        for (int i = 0; i < indiv1.size(); i++) {
-            // Crossover
-            if (Math.random() <= uniformRate) {
-                newSol.setGene(i, indiv1.getGene(i));
-            } else {
-                newSol.setGene(i, indiv2.getGene(i));
+
+        Individual child = indiv1.clone();
+
+        for (int i = generator.nextInt(8)+1; i < 9; i++) {
+            for(int j = 0; j<9; j++) {
+                child.getSudoku().setCelda(indiv2.getSudoku().getCelda(i / 9, i % 9), i / 9, i % 9);
             }
         }
-        return newSol;
+        return child;
     }
 
-    // Mutate an individual
-    private static void mutate(Individual indiv) {
-        // Loop through genes
-        for (int i = 0; i < indiv.size(); i++) {
-            if (Math.random() <= mutationRate) {
-                // Create random gene
-                int gene = generator.nextInt(9) + 1;
-                indiv.setGene(i, gene);
-            }
-        }
-    }
 
     // Select individuals for crossover
     private static Individual tournamentSelection(Population pop) {
@@ -84,8 +61,8 @@ public class Algorithm {
         Population tournament = new Population(tournamentSize, false);
         // For each place in the tournament get a random individual
         for (int i = 0; i < tournamentSize; i++) {
-            int randomId = (int) (Math.random() * pop.size());
-            tournament.saveIndividual(i, pop.getIndividual(randomId));
+            int randomId = (int) (Math.random() * pop.size()-1)+1;
+            tournament.saveIndividual(i, pop.getIndividual(randomId).clone());
         }
         // Get the fittest
         Individual fittest = tournament.getFittest();

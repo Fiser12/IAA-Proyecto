@@ -4,33 +4,36 @@ package controller.algorithm;
 import vo.Sudoku;
 
 public class Solver {
-    public final Float generations = 100f;
-    public static final double uniformRate = 0.5;
-    public static final double mutationRate = 0.015;
-    public static final int tournamentSize = 5;
-    public static final boolean elitism = true;
+    public final Float generations = 1000f;
+    public static final double mutationRate = 0.4;
+    public static final int tournamentSize = 10;
+    public static final int populationSize = 50;
+    public static final int elitism = 5;
+
+    Sudoku pista = new Sudoku();
+
+    public Solver() {
+    }
 
     public void setPista(Sudoku pista) {
         this.pista = pista;
     }
 
-    Sudoku pista = new Sudoku();
-
     public Sudoku solve() {
         FitnessCalc.setPista(pista);
-        Population myPop = new Population(50, true);
-        int generationCount = 0;
+        Population myPop = new Population(populationSize, true);
+        //while (true) {
         for (int generation = 0; generation < generations; generation++) {
-            if(!(myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()))
+            if((myPop.getFittest().getFitness() == FitnessCalc.getMaxFitness()))
                 break;
-            generationCount++;
-            System.out.println("Generation: " + generationCount + " Fittest: " + myPop.getFittest().getFitness());
+            System.out.println("Generation: " + (generation+1) + " Fittest: " + myPop.getFittest().getFitness());
             myPop = Algorithm.evolvePopulation(myPop);
         }
-        System.out.println("Solution found!");
-        System.out.println("Generation: " + generationCount);
-        System.out.println("Genes:");
+        if(myPop.getFittest().getFitness()==FitnessCalc.getMaxFitness())
+            System.out.println("Solution found! " +myPop.getFittest().getFitness() );
+        else
+            System.out.println("Solution not found! " +myPop.getFittest().getFitness() );
+
         return myPop.getFittest().getSudoku();
     }
-
 }

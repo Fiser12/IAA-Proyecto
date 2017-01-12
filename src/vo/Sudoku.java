@@ -5,8 +5,8 @@ package vo;
  */
 public class Sudoku implements Cloneable{
     private Celda [][] tabla;
-
     private int conflictos;
+
     public Sudoku()
     {
         tabla = new Celda[9][9];
@@ -135,7 +135,7 @@ public class Sudoku implements Cloneable{
     }
     public Sudoku clone() {
         Sudoku clonado = new Sudoku();
-
+        clonado.conflictos = conflictos;
         for(int i = 0; i < 9; i++) {
             for(int j = 0; j < 9; j++) {
                 Celda cell = new Celda(getCelda(i,j).getNumero(), getCelda(i,j).isInicial());
