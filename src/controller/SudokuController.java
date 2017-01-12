@@ -1,5 +1,7 @@
 package controller;
 import gui.Juego;
+
+import javax.swing.*;
 import java.awt.*;
 
 public class SudokuController

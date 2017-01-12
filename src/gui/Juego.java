@@ -5,11 +5,7 @@ import controller.algorithm.Solver;
 import vo.Sudoku;
 
 import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
@@ -22,6 +18,10 @@ public class Juego extends JFrame
 	private JPanel contentPane;
 	private JTable table;
 	private String [][]valores = new String[9][9];
+	private boolean [][]contiene = new boolean[9][9];
+	private JPanel panel;
+	private Sudoku nuevo;
+	private DefaultTableModel dtm;
 	private int [][] valoresInt = {
 			{0,0,6,		4,2,8,	0,0,0},
 			{4,5,0,		1,7,6,	0,3,2},
@@ -31,15 +31,26 @@ public class Juego extends JFrame
 			{0,4,0,		2,0,7,	0,9,3},
 			{7,2,0,		9,0,0,	5,6,0},
 
-			{5,6,8,		0,3,4,	2,0,9},
+			{5,6,8,		0,3,4,	0,0,9},
 			{0,1,0,		8,0,0,	3,7,6},
 			{0,7,0,		6,1,0,	4,8,0}
-	};
 
-	private boolean [][]contiene = new boolean[9][9];
-	private JPanel panel;
-	private Sudoku nuevo;
-	private DefaultTableModel dtm;
+			//MEDIO
+			/*
+			{2,0,0,		3,0,0,	0,1,9},
+			{8,0,7,		0,1,0,	0,6,0},
+			{1,9,0,		6,4,2,	0,0,7},
+
+			{0,1,0,		7,0,0,	0,0,0},
+			{7,2,0,		8,0,1,	0,0,3},
+			{0,0,0,		2,0,6,	7,8,1},
+
+			{6,7,1,		1,8,3,	0,9,0},
+			{0,8,0,		0,2,0,	6,3,4},
+			{3,5,0,		0,0,9,	1,7,8}
+			*/
+	};
+	private JTextField mutacion;
 	/**
 	 * Create the frame.
 	 */
@@ -64,7 +75,6 @@ public class Juego extends JFrame
 		panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
 		panel.setLayout(new GridLayout(0, 4, 0, 0));
-
 		table = new JTable();
 		table.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		contentPane.add(table, BorderLayout.CENTER);
@@ -100,8 +110,6 @@ public class Juego extends JFrame
             table.setDefaultRenderer(Object.class, new CellRenderer());
 
         }).start();
-
-
 	}
 	
 	public class CellRenderer extends DefaultTableCellRenderer{

@@ -1,16 +1,14 @@
 package controller.algorithm;
 
-
 import vo.Sudoku;
 
 public class Solver {
-    public final Float generations = 1000f;
-    public static final double mutationRate = 0.4;
-    public static final int tournamentSize = 10;
-    public static final int populationSize = 50;
-    public static final int elitism = 5;
+    public static double mutationRate = 0.5;
+    public static int tournamentSize = 10;
+    public static int populationSize = 50;
+    public static int elitism = 5;
 
-    Sudoku pista = new Sudoku();
+    private Sudoku pista = new Sudoku();
 
     public Solver() {
     }
@@ -22,11 +20,17 @@ public class Solver {
     public Sudoku solve() {
         FitnessCalc.setPista(pista);
         Population myPop = new Population(populationSize, true);
-        //while (true) {
-        for (int generation = 0; generation < generations; generation++) {
+        int generation = 0;
+        boolean fin = false;
+        int lastFitness = 0;
+        while (!fin) {
             if((myPop.getFittest().getFitness() == FitnessCalc.getMaxFitness()))
-                break;
-            System.out.println("Generation: " + (generation+1) + " Fittest: " + myPop.getFittest().getFitness());
+                fin = true;
+            if(myPop.getFittest().getFitness()!=lastFitness) {
+                lastFitness = myPop.getFittest().getFitness();
+                System.out.println("Generation: " + (generation+1) + " Fittest: " + myPop.getFittest().getFitness());
+            }
+            generation++;
             myPop = Algorithm.evolvePopulation(myPop);
         }
         if(myPop.getFittest().getFitness()==FitnessCalc.getMaxFitness())
